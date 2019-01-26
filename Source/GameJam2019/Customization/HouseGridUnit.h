@@ -29,13 +29,14 @@ public:
 	/*Removes the assigned decor object instance, converting it into the class subtype for storage*/
 	UFUNCTION(BlueprintCallable, Category = "Decor") TSubclassOf<ADecorBase> RetrieveAssignedDecor();
 
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Settings") UBoxComponent* DetectionVolume = nullptr;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	ADecorBase* AssignedDecor;
-
-	UBoxComponent* DetectionVolume = nullptr;
 
 public:	
 	// Called every frame
