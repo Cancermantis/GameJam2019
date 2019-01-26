@@ -25,6 +25,8 @@ public:
 	/*Type of decor that this is considered to be*/
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Decor") EDecorType DecorType = EDecorType::Floor;
 
+	UFUNCTION(BlueprintCallable, Category = "Decor") void AssignColor(FColor Color);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

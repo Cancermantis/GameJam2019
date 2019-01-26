@@ -1,6 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "DecorBase.h"
+#include "Runtime/Engine/Classes/Components/MeshComponent.h"
+#include "Runtime/Engine/Classes/Components/ActorComponent.h"
+#include "Runtime/Engine/Classes/Materials/MaterialInstance.h"
 
 // Sets default values
 ADecorBase::ADecorBase()
@@ -24,3 +27,14 @@ void ADecorBase::Tick(float DeltaTime)
 
 }
 
+void ADecorBase::AssignColor(FColor Color)
+{
+	TArray<UActorComponent*> Meshes = GetComponentsByClass(UMeshComponent::StaticClass());
+
+	for (UActorComponent* Component : Meshes)
+	{
+		UMeshComponent* Mesh = Cast<UMeshComponent>(Component);
+
+		
+	}
+}

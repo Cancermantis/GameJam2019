@@ -8,9 +8,18 @@ AHouseGridUnit::AHouseGridUnit()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	RootSceneComponent = CreateDefaultSubobject<USceneComponent>(FName("SceneRoot"));
+	RootComponent = RootSceneComponent;
+
+
 	DetectionVolume = CreateDefaultSubobject<UBoxComponent>(FName("DetectionVolume"));
-	DetectionVolume->SetBoxExtent(FVector(100.f));
-	RootComponent = DetectionVolume;
+	DetectionVolume->SetBoxExtent(FVector(50.f, 50.f, 10.f));
+	DetectionVolume->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
+	DetectionVolume->SetRelativeLocation(FVector(0.f, 0.f, 10.f));
+	DetectionVolume->SetCollisionProfileName("GridCell");
+
+	OnActorBeginOverlap.AddDynamic(this, &AHouseGridUnit::BeginOverlap);
+	OnActorEndOverlap.AddDynamic(this, &AHouseGridUnit::EndOverlap);
 }
 
 // Called when the game starts or when spawned
@@ -36,7 +45,10 @@ bool AHouseGridUnit::SetAssignedDecor(TSubclassOf<ADecorBase> DecorClass)
 	//Spawn an instance of the desired decor type
 	FActorSpawnParameters Parameters;
 	Parameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	AssignedDecor = GetWorld()->SpawnActor<ADecorBase>(DecorClass, GetActorTransform());
+	FRotator Rotation = GetActorRotation();
+	Rotation.Yaw = DefaultRotation;
+	FTransform Transform = GetActorTransform();
+	AssignedDecor = GetWorld()->SpawnActor<ADecorBase>(DecorClass, Transform);
 
 
 	// Return false if the assigned decor was not spawned
@@ -44,6 +56,8 @@ bool AHouseGridUnit::SetAssignedDecor(TSubclassOf<ADecorBase> DecorClass)
 		return false;
 
 	AssignedDecor->AttachToActor(this, FAttachmentTransformRules::SnapToTargetIncludingScale);
+
+	AssignedDecor->SetActorRotation(Rotation);
 
 	return true;
 }
@@ -69,4 +83,21 @@ TSubclassOf<ADecorBase> AHouseGridUnit::RetrieveAssignedDecor()
 	AssignedDecor = nullptr;
 
 	return OutClass;
+}
+
+void AHouseGridUnit::BeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
+{
+	if (AIslandCharacter* Character = Cast<AIslandCharacter>(OtherActor))
+	{
+		Character->IgnoredGridCells.AddUnique(this);
+	}
+}
+
+void AHouseGridUnit::EndOverlap(AActor* OverlappedActor, AActor* OtherActor)
+{
+	if (AIslandCharacter* Character = Cast<AIslandCharacter>(OtherActor))
+	{
+		if (Character->IgnoredGridCells.Contains(this))
+			Character->IgnoredGridCells.Remove(this);
+	}
 }
