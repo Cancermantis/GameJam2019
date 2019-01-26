@@ -25,6 +25,12 @@ public:
 	/*Type of decor that this is considered to be*/
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Decor") EDecorType DecorType = EDecorType::Floor;
 
+	/*Image used to represent the item in the inventory*/
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Decor") UTexture2D* Icon = nullptr;
+
+	/*Name of the Item*/
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Decor") FText Name;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Decor") int32 ColorIndex;
 
 	UFUNCTION(BlueprintCallable, Category = "Decor") void AssignColor(FLinearColor Color);
