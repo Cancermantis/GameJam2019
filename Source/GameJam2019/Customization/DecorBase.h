@@ -10,7 +10,8 @@ UENUM(BlueprintType)
 enum class EDecorType : uint8
 {
 	Floor,
-	Wall
+	Wall,
+	Bed
 };
 
 UCLASS()
