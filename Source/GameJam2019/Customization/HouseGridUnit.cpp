@@ -14,7 +14,9 @@ AHouseGridUnit::AHouseGridUnit()
 
 	DetectionVolume = CreateDefaultSubobject<UBoxComponent>(FName("DetectionVolume"));
 	DetectionVolume->SetBoxExtent(FVector(50.f, 50.f, 10.f));
-	DetectionVolume->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetIncludingScale);
+	FAttachmentTransformRules Rules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, false);
+	DetectionVolume->AttachTo(RootSceneComponent);
+	//DetectionVolume->AttachToComponent(RootComponent, Rules);
 	DetectionVolume->SetRelativeLocation(FVector(0.f, 0.f, 10.f));
 	DetectionVolume->SetCollisionProfileName("GridCell");
 
